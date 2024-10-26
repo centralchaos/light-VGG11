@@ -6,6 +6,9 @@ This is my experiment environment:
 - python3.7
 - pytorch+cuda11.2
 
+# Data Prep and Interference added - Oct 26, 2024
+After running the training script using the 5 fold data provided by axiu mao, you can use the dataprep.py to prepare your own unseen data and load to the model. Use the interference.py to test the unseen data. 
+
 # Original Datasets
 The dataset named 'Used_AudioAndLabels.pkl'(https://figshare.com/articles/dataset/Automated_identification_of_chicken_distress_vocalisations_using_deep_learning_models/20049722) contains 3,363 distress calls and 1,973 natural barn sounds with one second. Each second contains 22,050 time series points.
 
