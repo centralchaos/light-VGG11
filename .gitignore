@@ -1,7 +1,7 @@
 # Python
 __pycache__/
 *.py[cod]
-*.class
+*$py.class
 *.so
 .Python
 build/
@@ -30,10 +30,17 @@ checkpoint/
 runs/
 *.pth
 
+# Data
+data/
+*.pt
+*.pkl
+
+# Results and temp files
+results.csv
+*.log
+*.temp
+
 # IDE
 .idea/
 .vscode/
 *.swp
-
-# data
-data/
