@@ -176,21 +176,28 @@ if __name__ == '__main__':
     # parser.add_argument('--net', type=str, default='canet', help='net type')
     parser.add_argument('--net', type=str, default='vgg11', help='net type')
     parser.add_argument('--gpu', type = int, default=0, help='use gpu or not')
-    parser.add_argument('--b', type=int, default=128, help='batch size for dataloader')
+    parser.add_argument('--b', type=int, default=32, help='batch size for dataloader')
     parser.add_argument('--lr', type=float, default=1e-4, help='initial learning rate')
     parser.add_argument('--epoch',type=int, default=100, help='total training epoches')
-    parser.add_argument('--seed',type=int, default=1, help='seed')
+    parser.add_argument('--seed',type=int, default=3, help='seed')
     parser.add_argument('--weight_d',type=float, default=0, help='weight decay for regularization')
-    parser.add_argument('--save_path',type=str, default='setting0', help='saved path of each setting')
-    parser.add_argument('--data_path',type=str, default='..\\1_new_separate_normal_myTensor_Log_power_88_bird_acoustic.pt', help='saved path of input data')
+    parser.add_argument('--save_path',type=str, default='cpu_training', help='saved path of each setting')
+    parser.add_argument('--data_path',type=str, default=os.path.join('data', '1_new_separate_normal_myTensor_Log_power_88_bird_acoustic.pt'), help='saved path of input data')
     args = parser.parse_args()
 
+    sysstr = platform.system()
+    if(sysstr == "Windows"):
+        num_workers = 0  # Windows compatibility
+    else:
+        num_workers = 2  # Reduced from 8 for CPU optimization
+
+    # GPU/CPU setup
     if args.gpu:
         torch.cuda.manual_seed(args.seed)
-      
     else:
         torch.manual_seed(args.seed)
-       
+        torch.set_num_threads(num_workers)  # Now num_workers is defined
+    
     model_urls = {
     'vgg11': 'https://download.pytorch.org/models/vgg11-8a719046.pth',
     'vgg13': 'https://download.pytorch.org/models/vgg13-19584684.pth',
@@ -218,15 +225,9 @@ if __name__ == '__main__':
 
     print('Setting: Epoch: {}, Batch size: {}, Learning rate: {:.6f}, gpu:{}'.format(args.epoch, args.b, args.lr, args.gpu))
 
-    sysstr = platform.system()
-    if(sysstr =="Windows"):
-        num_workers = 0
-    else:
-        num_workers = 8
-
-    pathway = args.data_path
+    pathway = os.path.normpath(args.data_path)
     if sysstr=='Linux': 
-        pathway = args.data_path
+        pathway = os.path.normpath(args.data_path)
     
     train_loader = get_mydataloader(pathway, data_id=0, batch_size=args.b, num_workers=num_workers, shuffle=True)
     valid_loader = get_mydataloader(pathway, data_id=1, batch_size=args.b, num_workers=num_workers, shuffle=True)
